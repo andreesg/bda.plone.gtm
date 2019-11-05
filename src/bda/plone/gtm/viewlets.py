@@ -65,9 +65,15 @@ class GTMDataViewlet(ViewletBase, GTMSettings):
             return u''
         # lookup GTM data
         data = IGTMData(self.context).data
-        # render empty if no data to track
+        
+        # render only the noscript if no data to track
+        # useful to track the default universal analytics tag
+        # TODO: add an option to the settings to choose to use tag manager as the main analytics tool
         if not data:
-            return u''
+            return u'%(no_script)' % dict(
+                    no_script=GTM_NO_SCRIPT % dict(container_id=settings.container_id)
+            )
+
         # ensure data is list of dicts
         if not isinstance(data, list):
             assert isinstance(data, dict)
